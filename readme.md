@@ -1,64 +1,36 @@
-# Salesforce Marketing Cloud - Automação B2B (Consultoria de TI)
+# Core Tech - Help Desk Relational Database
 
-> Projeto prático de simulação de banco de dados e lógicas de segmentação para o Salesforce Marketing Cloud (SFMC).
+## Objetivo do Projeto
+Este projeto consiste na modelagem e implementação de um Banco de Dados Relacional construído do zero para gerenciar a operação de um sistema de Help Desk (Suporte de TI). 
 
-## Sobre o Projeto
-Este repositório documenta a estruturação de dados e as regras de negócio criadas para a **Core Tech Consultoria**, uma empresa fictícia de suporte técnico corporativo. 
+O objetivo central é fornecer uma base de dados estruturada, normalizada e segura para o gerenciamento de clientes B2B, rastreamento de chamados técnicos e padronização do catálogo de serviços, servindo como uma fundação confiável para futuras integrações de software e análises de Business Intelligence (BI).
 
-O objetivo deste projeto é demonstrar proficiência nas linguagens e arquiteturas utilizadas no ecossistema Salesforce Marketing Cloud, focando na transformação de dados brutos em jornadas de marketing automatizadas (Journeys) para clientes B2B.
+## O Problema de Negócios Resolvido
+* **Rastreabilidade de Atendimentos:** Controle do ciclo de vida dos tickets (Abertura, Urgência, Status e Resolução).
+* **Padronização do Catálogo (Integridade):** Utilização de tabelas normalizadas e chaves estrangeiras para garantir que os serviços solicitados obedeçam estritamente ao catálogo oficial, eliminando redundâncias e erros de digitação.
+* **Gestão de Clientes B2B:** Centralização dos dados das empresas parceiras para histórico de consumo de suporte.
+* **Conformidade Básica de Dados:** Inclusão de campos de permissão (Opt-In) para controle ético e legal de comunicações.
 
----
+## Tecnologias e Ferramentas Utilizadas
+* **SQL (Structured Query Language):** Linguagem padrão para estruturação (DDL) e manipulação (DML) dos dados.
+* **MySQL / MariaDB:** Sistema de Gerenciamento de Banco de Dados Relacional (SGBD).
+* **phpMyAdmin (via XAMPP):** Interface gráfica para administração do servidor e execução de rotinas.
+* **Visual Studio Code:** IDE utilizada para o desenvolvimento e organização modular dos scripts.
+* **Git e GitHub:** Versionamento de código e documentação do projeto.
 
-## 1. O Modelo de Dados (Data Extensions)
-Para simular o ambiente relacional do Contact Builder no SFMC, estruturei o banco de dados em três *Data Extensions* principais:
+## Estrutura do Banco de Dados (Schema)
+O projeto é dividido de forma modular, focado na integridade referencial:
 
-### `1. Empresas_Master` (Dados do Cliente)
-Armazena as informações das empresas que possuem ou já possuíram contratos ativos.
-* `AccountKey` (Primary Key) - ID único da empresa.
-* `NomeEmpresa` - Razão Social ou Nome Fantasia.
-* `EmailContato` - E-mail do decisor (CTO ou Gerente de TI).
-* `DataCadastro` - Data de entrada no sistema.
-* `StatusContrato` - Ativo, Suspenso ou Cancelado.
-* `OptIn_Marketing` - Booleano (Aceita comunicações?).
+1. **`Empresas_Master`**: Tabela central de clientes, gerenciando os perfis corporativos e consentimento de comunicação.
+2. **`Tipos_Servico`**: Tabela de catálogo oficial de serviços de infraestrutura (Ex: Limpeza Preventiva, Configuração de TEF, Cabeamento). Atua como chave primária de validação.
+3. **`Chamados_Suporte`**: Tabela transacional que registra os eventos de suporte, cruzando o cliente que solicitou com o serviço prestado por meio de Chaves Estrangeiras (Foreign Keys).
 
-### `2. Chamados_Suporte` (Histórico de Interações)
-Registra os tickets de atendimento e manutenções preventivas realizadas.
-* `TicketID` (Primary Key) - ID do chamado.
-* `AccountKey` (Foreign Key) - Relacionamento com a empresa.
-* `DataAbertura` - Data em que o suporte foi solicitado.
-* `TipoServico` - Ex: Formatação, Limpeza Preventiva, Cabeamento Estruturado.
-* `NivelUrgencia` - Baixo, Médio, Crítico.
-
-### `3. Leads_B2B` (Prospects em Captação)
-Base de potenciais clientes capturados via campanhas de tráfego pago.
-* `LeadKey` (Primary Key) - ID único do prospect.
-* `NomeLead` - Nome do contato.
-* `EmailLead` - E-mail corporativo.
-* `TamanhoEmpresa` - Número estimado de computadores (Ex: 10-50, 51-200).
-* `OrigemCampanha` - De onde o lead veio (Ex: Google Ads - Área Nobre).
+## Conceitos Práticos Aplicados
+- **Modelagem Relacional e Normalização:** Aplicação prática da 1ª e 2ª Formas Normais.
+- **Integridade Referencial:** Implementação de `PRIMARY KEY` (PK) e `FOREIGN KEY` (FK).
+- **Data Definition Language (DDL):** Comandos `CREATE TABLE`, `ALTER TABLE`, `ADD CONSTRAINT`.
+- **Data Manipulation Language (DML):** Comandos `INSERT INTO`, `UPDATE`, `SELECT`.
+- **Lógica Condicional e Tipagem:** Uso estratégico de tipos de dados (`VARCHAR`, `INT`, `ENUM`, `BOOLEAN`).
 
 ---
-
-## 2. As Campanhas (Queries SQL)
-Na pasta `/queries`, você encontrará os scripts SQL desenvolvidos para o **Automation Studio**. Eles são responsáveis por extrair o público correto das tabelas acima para alimentar o *Journey Builder*.
-
-As campanhas desenvolvidas são:
-* **[01] Régua de Nutrição de Leads:** Filtra novos leads capturados via anúncios para enviar uma sequência de e-mails sobre a importância da manutenção preventiva.
-* **[02] Lembrete de Renovação:** Identifica clientes com contratos próximos do vencimento (30 dias).
-* **[03] Cross-Sell de Infraestrutura:** Identifica clientes que solicitaram mais de 3 chamados de "Lentidão de Rede" no último trimestre, para ofertar um projeto de Cabeamento Estruturado.
-* **[04] Win-back B2B:** Filtra empresas que cancelaram o contrato há mais de 6 meses para uma campanha de reativação com proposta de consultoria gratuita.
-
----
-
-## 3. Templates e Personalização (HTML/CSS & AMPscript)
-*(Em desenvolvimento)*
-Na pasta `/templates`, estarão os códigos-fonte dos e-mails transacionais e promocionais criados no **Content Builder**, contendo:
-* Estrutura de tabelas responsivas (HTML/CSS in-line).
-* Inserção de blocos dinâmicos utilizando **AMPscript** para personalização de nomes, cargos e detalhes dos serviços prestados.
-
----
-
-## Tecnologias e Habilidades Demonstradas
-* **Linguagens:** SQL (SQL Server), HTML, CSS, JavaScript (Básico), AMPscript.
-* **Conceitos de Negócio:** B2B Marketing, LTV, Automação de Funil de Vendas, Segmentação de Dados.
-* **Arquitetura SFMC:** Data Extensions, Contact Builder, Automation Studio, Journey Builder, Content Builder.
+*Projeto desenvolvido como laboratório prático de arquitetura de dados operacionais e infraestrutura de TI.*
