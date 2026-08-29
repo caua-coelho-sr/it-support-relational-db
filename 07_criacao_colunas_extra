@@ -16,7 +16,7 @@ where TicketID = 3;
 --alimentando a coluna 'DESCRICAO_PROBLEMA'
 update Chamados_Suporte
 set DESCRICAO_PROBLEMA = 'Computador não liga'
-WHERE TicketID = 2
+WHERE TicketID = 2;
 
 --Alterado nome da coluna DESCRICAO_PROBLEMA para remover o CAPS
 ALTER TABLE Chamados_Suporte
